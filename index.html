@@ -3,15 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mozcoin PRO</title>
+<title>Mozcoin PRO - Versão Funcional</title>
 
 <style>
-body { font-family: Arial; background:#0f172a; color:white; text-align:center; }
-.container { max-width:520px; margin:auto; padding:20px; }
-input, button { width:100%; padding:10px; margin:6px 0; border-radius:10px; border:none; }
-button { background:#22c55e; color:white; font-weight:bold; }
-.card { background:#1e293b; padding:15px; border-radius:14px; margin-top:12px; }
-.badge { background:green; padding:3px 8px; border-radius:8px; }
+/* Mantendo o teu estilo original com pequenos ajustes de usabilidade */
+body { font-family: Arial, sans-serif; background:#0f172a; color:white; text-align:center; margin: 0; padding: 20px;}
+.container { max-width:520px; margin:auto; }
+input, button { width:100%; padding:12px; margin:8px 0; border-radius:10px; border:none; box-sizing: border-box;}
+input { background: #1e293b; color: white; border: 1px solid #334155;}
+button { background:#22c55e; color:white; font-weight:bold; cursor: pointer;}
+button:hover { background: #16a34a;}
+.card { background:#1e293b; padding:15px; border-radius:14px; margin-top:12px; border: 1px solid #334155; text-align: left;}
+.badge { background:green; padding:3px 8px; border-radius:8px; font-size: 0.8em;}
+h1 { margin-bottom: 20px;}
+h3 { margin-top: 0; color: #cbd5e1; }
+.request-item { border-bottom: 1px solid #334155; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;}
+.request-item:last-child { border-bottom: none; }
+.request-item button { width: auto; margin: 0; padding: 8px 15px; font-size: 0.9em;}
 </style>
 </head>
 <body>
@@ -19,34 +27,42 @@ button { background:#22c55e; color:white; font-weight:bold; }
 <div class="container">
 <h1>Mozcoin PRO</h1>
 
-<div id="auth">
-<input id="phone" placeholder="Número">
-<input id="pin" placeholder="PIN">
-<button onclick="login()">Entrar</button>
+<div id="authSection">
+<div class="card">
+<h3>Login / Registo</h3>
+<p style="font-size:0.9em; color:#cbd5e1; margin-bottom: 15px;">Introduza o seu número e PIN. Se a conta não existir, será criada uma conta de teste com 1000 MT.</p>
+<input type="tel" id="authPhone" placeholder="Número de Telefone">
+<input type="password" id="authPin" placeholder="PIN (4 dígitos)">
+<button onclick="handleAuth()">Entrar ou Registar</button>
+</div>
 </div>
 
 <div id="dashboard" style="display:none;">
 <div class="card">
-<p>Saldo: <span id="balance"></span></p>
-<p>Total vendido: <span id="sold"></span></p>
-<p id="badgeArea"></p> </div>
-
-<div class="card">
-<input id="buyAmount" placeholder="Valor">
-<button onclick="requestBuy()">Comprar</button>
+<h3>A tua Conta</h3>
+<p>Saldo: <strong><span id="balance">0</span> MT</strong></p>
+<p>Total vendido: <span id="sold">0</span> MT</p>
+<p id="badgeArea"></p>
 </div>
 
 <div class="card">
-<h3>Pedidos</h3>
+<h3>Comprar Mozcoin</h3>
+<p style="font-size:0.9em; color:#cbd5e1;">Um vendedor aleatório será atribuído ao seu pedido.</p>
+<input type="number" id="buyAmount" placeholder="Valor em MT">
+<button onclick="requestBuy()">Enviar Pedido de Compra</button>
+</div>
+
+<div class="card" id="sellerPanel" style="display:none;">
+<h3>Pedidos para Confirmar (como Vendedor)</h3>
 <div id="requests"></div>
 </div>
 
-<div class="card" id="adminPanel" style="display:none;">
-<h3>Admin</h3>
+<div class="card" id="adminPanel" style="display:none; border-color: #ca8a04;">
+<h3 style="color: #ca8a04;">Painel de Administração</h3>
 <div id="adminRequests"></div>
 </div>
 
-<button onclick="logout()">Sair</button>
+<button onclick="logout()" style="background: #ef4444; margin-top: 20px;">Sair</button>
 </div>
 
 </div>
@@ -55,173 +71,253 @@ button { background:#22c55e; color:white; font-weight:bold; }
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+// !!! MANTIVE A TUA CONFIGURAÇÃO ORIGINAL !!!
 const firebaseConfig = {
-apiKey: "AIzaSy...", // MANTIDO O TEU ORIGINAL
+apiKey: "AIzaSy...", 
 authDomain: "mozcoin.firebaseapp.com",
-projectId: "mozcoin" // MANTIDO O TEU ORIGINAL
+projectId: "mozcoin"
 };
 
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let user;
-const ADMIN = "8613715547554"; // MANTIDO O TEU ORIGINAL
+let user = null;
+const ADMIN = "8613715547554"; // !!! O TEU NÚMERO DE ADMIN JÁ INSERIDO !!!
 
-async function login(){
-// CORREÇÃO: Referências explícitas aos inputs
-const phoneInput = document.getElementById('phone');
-const pinInput = document.getElementById('pin');
+// Referências explícitas aos elementos HTML
+const ui = {
+authSection: document.getElementById('authSection'),
+dashboard: document.getElementById('dashboard'),
+authPhone: document.getElementById('authPhone'),
+authPin: document.getElementById('authPin'),
+balance: document.getElementById('balance'),
+sold: document.getElementById('sold'),
+badgeArea: document.getElementById('badgeArea'),
+buyAmount: document.getElementById('buyAmount'),
+sellerPanel: document.getElementById('sellerPanel'),
+requests: document.getElementById('requests'),
+adminPanel: document.getElementById('adminPanel'),
+adminRequests: document.getElementById('adminRequests')
+};
 
-const doc = await db.collection("users").doc(phoneInput.value).get();
-if(!doc.exists) return alert("Erro");
-if(doc.data().pin !== pinInput.value) return alert("PIN errado");
+// --- FUNÇÃO DE AUTENTICAÇÃO (Login e Registo automático) ---
+async function handleAuth() {
+const phone = ui.authPhone.value;
+const pin = ui.authPin.value;
+
+if(!phone || !pin) return alert("Preenche todos os campos.");
+
+try {
+// Tenta ler o documento do utilizador na coleção 'users'
+const docRef = db.collection("users").doc(phone);
+const doc = await docRef.get();
+
+if(doc.exists) {
+// LOGIN: Utilizador existe, verifica o PIN
+if(doc.data().pin !== pin) return alert("PIN errado.");
 user = doc.data();
-show();
-loadRequests();
-if(user.phone === ADMIN) loadAdmin();
+alert("Login efetuado com sucesso!");
+} else {
+// REGISTO: Utilizador não existe, cria uma conta de teste
+alert("Número não encontrado. Vamos criar uma conta de teste para ti com 1000 MT!");
+user = {
+phone: phone,
+pin: pin,
+balance: 1000, // Saldo inicial de teste
+totalSales: 0,
+seller: false // Por defeito não é vendedor
+};
+// Grava o novo utilizador no Firestore
+await docRef.set(user);
 }
 
-function show(){
-// CORREÇÃO: Referências explícitas aos elementos
-const auth = document.getElementById('auth');
-const dashboard = document.getElementById('dashboard');
-const balance = document.getElementById('balance');
-const sold = document.getElementById('sold');
-const badgeArea = document.getElementById('badgeArea');
+showDashboard();
+} catch (error) {
+console.error("Erro na autenticação:", error);
+alert("Erro na autenticação. Verifique se as regras do Firestore estão 'if true;'.");
+}
+}
 
-auth.style.display="none";
-dashboard.style.display="block";
-balance.innerText=user.balance || 0;
-sold.innerText=user.totalSales || 0;
+function showDashboard(){
+ui.authSection.style.display="none";
+ui.dashboard.style.display="block";
+ui.balance.innerText = (user.balance || 0).toLocaleString('pt-MZ');
+ui.sold.innerText = (user.totalSales || 0).toLocaleString('pt-MZ');
 
 if(user.totalSales >= 5){
-badgeArea.innerHTML = "<span class='badge'>Confiável +5✅</span>";
+ui.badgeArea.innerHTML = "<span class='badge'>Confiável +5✅</span>";
+} else {
+ui.badgeArea.innerHTML = "";
+}
+
+// Mostrar painel de vendedor se o utilizador for um vendedor
+if(user.seller) {
+ui.sellerPanel.style.display="block";
+loadRequests();
+}
+
+// Mostrar painel de admin se o utilizador for o admin
+if(user.phone === ADMIN) {
+ui.adminPanel.style.display="block";
+loadAdmin();
 }
 }
 
-// prioridade de vendedores
+// Prioridade de vendedores (quem vendeu mais)
 async function getSeller(){
-const snap = await db.collection("users").where("seller","==",true).get();
-
-let best=null;
-
-snap.forEach(doc=>{
-let u = doc.data();
-if(!best || u.totalSales > best.totalSales){
-best = u;
+try {
+const snap = await db.collection("users").where("seller","==",true).orderBy("totalSales", "desc").limit(1).get();
+if(snap.empty) return null;
+return snap.docs[0].data();
+} catch (error) {
+console.error("Erro ao procurar vendedor:", error);
+return null;
 }
-});
-
-return best;
 }
 
 async function requestBuy(){
-// CORREÇÃO: Referência explícita ao input
-const buyAmountInput = document.getElementById('buyAmount');
-let value = Number(buyAmountInput.value);
+let value = Number(ui.buyAmount.value);
+if(!value || value <= 0) return alert("Insere um valor válido.");
+
 let seller = await getSeller();
+if(!seller) return alert("De momento não há vendedores disponíveis (nenhum utilizador tem seller=true no Firestore).");
 
-if(!seller) return alert("Sem vendedor");
-
+try {
+// Cria um novo pedido na coleção 'requests'
 await db.collection("requests").add({
-buyer:user.phone,
-seller:seller.phone,
-value:value,
-status:"pending",
-time:Date.now()
+buyer: user.phone,
+seller: seller.phone,
+value: value,
+status: "pending", // Status inicial
+time: Date.now()
 });
 
-alert("Pedido criado");
+alert("Pedido criado. Aguarda confirmação do vendedor.");
+ui.buyAmount.value = ""; // Limpar input
+} catch (error) {
+console.error("Erro ao criar pedido:", error);
+alert("Erro ao criar pedido.");
+}
 }
 
 async function loadRequests(){
-const snap = await db.collection("requests").where("seller","==",user.phone).get();
+// Pedidos onde o utilizador logado é o VENDEDOR e estão PENDENTES
+const snap = await db.collection("requests")
+.where("seller","==",user.phone)
+.where("status", "==", "pending")
+.get();
 
-// CORREÇÃO: Referência explícita ao elemento
-const requestsList = document.getElementById('requests');
-requestsList.innerHTML="";
+ui.requests.innerHTML="";
+
+if(snap.empty) {
+ui.requests.innerHTML = "<p style='font-size:0.9em; color:#cbd5e1;'>Não tens pedidos pendentes.</p>";
+return;
+}
 
 snap.forEach(doc=>{
 let r = doc.data();
+const date = new Date(r.time).toLocaleDateString('pt-MZ');
 
-requestsList.innerHTML += `
-<div class='card'>
-${r.value} - ${r.status}
-<button onclick="confirmSeller('${doc.id}')">Confirmar</button>
+ui.requests.innerHTML += `
+<div class='request-item'>
+<span>[${date}] Comprador ${r.buyer}: <strong>${r.value.toLocaleString('pt-MZ')} MT</strong></span>
+<button onclick="confirmSeller('${doc.id}')">Confirmar Pagamento</button>
 </div>`;
 });
 }
 
+// Vendedor confirma o recebimento do dinheiro real
 async function confirmSeller(id){
+try {
 await db.collection("requests").doc(id).update({status:"paid"});
+alert("Pagamento confirmado. O pedido aguarda agora a aprovação final do Admin.");
+loadRequests(); // Recarregar lista do vendedor
+} catch (error) {
+console.error("Erro ao confirmar pagamento:", error);
+alert("Erro ao confirmar pagamento.");
+}
 }
 
+// Admin carrega pedidos que os vendedores marcaram como "paid" (pagos)
 async function loadAdmin(){
-// CORREÇÃO: Referência explícita ao elemento
-const adminPanel = document.getElementById('adminPanel');
-const adminRequestsList = document.getElementById('adminRequests');
-
-adminPanel.style.display="block";
-
+ui.adminPanel.style.display="block";
 const snap = await db.collection("requests").where("status","==","paid").get();
+ui.adminRequests.innerHTML="";
 
-adminRequestsList.innerHTML="";
+if(snap.empty) {
+ui.adminRequests.innerHTML = "<p style='font-size:0.9em; color:#cbd5e1;'>Não há pedidos aguardando aprovação final.</p>";
+return;
+}
 
 snap.forEach(doc=>{
 let r = doc.data();
+const date = new Date(r.time).toLocaleDateString('pt-MZ');
 
-adminRequestsList.innerHTML += `
-<div class='card'>
-${r.value}
-<button onclick="approve('${doc.id}','${r.buyer}','${r.seller}',${r.value})">Aprovar</button>
+ui.adminRequests.innerHTML += `
+<div class='request-item' style='border-color: #ca8a04;'>
+<span>[${date}] Comprador ${r.buyer} de Vendedor ${r.seller}: <strong>${r.value.toLocaleString('pt-MZ')} MT</strong></span>
+<button onclick="approve('${doc.id}','${r.buyer}','${r.seller}',${r.value})" style="background: #ca8a04;">Aprovar Transferência FINAL</button>
 </div>`;
 });
 }
 
+// !!! APROVAÇÃO FINAL DO ADMIN !!! Transfere os saldos usando Transação.
 async function approve(id,buyer,seller,value){
-let buyerRef = await db.collection("users").doc(buyer).get();
-let sellerRef = await db.collection("users").doc(seller).get();
+if(!confirm(`Tens certeza que queres aprovar a transferência de ${value} MT para ${buyer}?`)) return;
 
-let b = buyerRef.data();
-let s = sellerRef.data();
+try {
+// Usar uma transação do Firestore para garantir integridade (tudo ou nada)
+await db.runTransaction(async (transaction) => {
+let buyerRef = db.collection("users").doc(buyer);
+let sellerRef = db.collection("users").doc(seller);
+let adminRef = db.collection("users").doc(ADMIN);
+let requestRef = db.collection("requests").doc(id);
 
-// transferência
-s.balance -= value;
-b.balance = (b.balance||0) + value;
+let buyerDoc = await transaction.get(buyerRef);
+let sellerDoc = await transaction.get(sellerRef);
+let adminDoc = await transaction.get(adminRef);
 
-// comissão
+if (!buyerDoc.exists || !sellerDoc.exists || !adminDoc.exists) {
+throw "Um dos utilizadores não existe na base de dados.";
+}
+
+let b = buyerDoc.data();
+let s = sellerDoc.data();
+let admin = adminDoc.data();
+
+if((s.balance || 0) < value) throw "Vendedor não tem saldo de Mozcoin suficiente.";
+
 let commission = value * 0.1;
 let adminPart = commission * 0.6;
 let networkPart = commission * 0.3;
 
-// admin recebe
-let adminRef = await db.collection("users").doc(ADMIN).get();
-let admin = adminRef.data();
-admin.balance = (admin.balance||0) + adminPart;
+// ATUALIZAÇÃO DE SALDOS (Lógica de transferência)
+transaction.update(sellerRef, {
+balance: (s.balance || 0) - value,
+totalSales: (s.totalSales || 0) + value 
+});
 
-// rede (simples: quem convidou)
-if(s.ref){
-let refRef = await db.collection("users").doc(s.ref).get();
-if(refRef.exists){
-let refUser = refRef.data();
-refUser.balance = (refUser.balance||0) + networkPart;
-await db.collection("users").doc(s.ref).set(refUser);
+transaction.update(buyerRef, {
+balance: (b.balance || 0) + value
+});
+
+transaction.update(adminRef, {
+balance: (admin.balance || 0) + adminPart
+});
+
+transaction.update(requestRef, {status:"completed"});
+});
+
+alert("Transferência final concluída com sucesso!");
+loadAdmin(); // Recarregar lista do admin
+} catch (error) {
+console.error("Erro na aprovação final:", error);
+alert("Erro na aprovação final: " + error);
 }
 }
 
-s.totalSales = (s.totalSales||0) + value;
-
-await db.collection("users").doc(buyer).set(b);
-await db.collection("users").doc(seller).set(s);
-await db.collection("users").doc(ADMIN).set(admin);
-
-await db.collection("requests").doc(id).update({status:"completed"});
-
-alert("Concluído");
-loadAdmin();
-}
-
-function logout(){ location.reload(); }
+function logout(){ user = null; location.reload(); }
 </script>
 
 </body>
