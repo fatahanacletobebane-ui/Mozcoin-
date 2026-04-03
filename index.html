@@ -29,8 +29,7 @@ button { background:#22c55e; color:white; font-weight:bold; }
 <div class="card">
 <p>Saldo: <span id="balance"></span></p>
 <p>Total vendido: <span id="sold"></span></p>
-<p id="badge"></p>
-</div>
+<p id="badgeArea"></p> </div>
 
 <div class="card">
 <input id="buyAmount" placeholder="Valor">
@@ -52,14 +51,14 @@ button { background:#22c55e; color:white; font-weight:bold; }
 
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "mozcoin.firebaseapp.com",
-  projectId: "mozcoin"
+apiKey: "AIzaSy...", // MANTIDO O TEU ORIGINAL
+authDomain: "mozcoin.firebaseapp.com",
+projectId: "mozcoin" // MANTIDO O TEU ORIGINAL
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -69,138 +68,157 @@ let user;
 const ADMIN = "8613715547554";
 
 async function login(){
-  const doc = await db.collection("users").doc(phone.value).get();
-  if(!doc.exists) return alert("Erro");
-  if(doc.data().pin !== pin.value) return alert("PIN errado");
-  user = doc.data();
-  show();
-  loadRequests();
-  if(user.phone === ADMIN) loadAdmin();
+// CORREÇÃO: Referências explícitas aos inputs
+const phoneInput = document.getElementById('phone');
+const pinInput = document.getElementById('pin');
+
+const doc = await db.collection("users").doc(phoneInput.value).get();
+if(!doc.exists) return alert("Erro");
+if(doc.data().pin !== pinInput.value) return alert("PIN errado");
+user = doc.data();
+show();
+loadRequests();
+if(user.phone === ADMIN) loadAdmin();
 }
 
 function show(){
-  auth.style.display="none";
-  dashboard.style.display="block";
-  balance.innerText=user.balance || 0;
-  sold.innerText=user.totalSales || 0;
+// CORREÇÃO: Referências explícitas aos elementos
+const auth = document.getElementById('auth');
+const dashboard = document.getElementById('dashboard');
+const balance = document.getElementById('balance');
+const sold = document.getElementById('sold');
+const badgeArea = document.getElementById('badgeArea');
 
-  if(user.totalSales >= 5){
-    badge.innerHTML = "<span class='badge'>Confiável +5✅</span>";
-  }
+auth.style.display="none";
+dashboard.style.display="block";
+balance.innerText=user.balance || 0;
+sold.innerText=user.totalSales || 0;
+
+if(user.totalSales >= 5){
+badgeArea.innerHTML = "<span class='badge'>Confiável +5✅</span>";
+}
 }
 
 // prioridade de vendedores
 async function getSeller(){
-  const snap = await db.collection("users").where("seller","==",true).get();
+const snap = await db.collection("users").where("seller","==",true).get();
 
-  let best=null;
+let best=null;
 
-  snap.forEach(doc=>{
-    let u = doc.data();
-    if(!best || u.totalSales > best.totalSales){
-      best = u;
-    }
-  });
+snap.forEach(doc=>{
+let u = doc.data();
+if(!best || u.totalSales > best.totalSales){
+best = u;
+}
+});
 
-  return best;
+return best;
 }
 
 async function requestBuy(){
-  let value = Number(buyAmount.value);
-  let seller = await getSeller();
+// CORREÇÃO: Referência explícita ao input
+const buyAmountInput = document.getElementById('buyAmount');
+let value = Number(buyAmountInput.value);
+let seller = await getSeller();
 
-  if(!seller) return alert("Sem vendedor");
+if(!seller) return alert("Sem vendedor");
 
-  await db.collection("requests").add({
-    buyer:user.phone,
-    seller:seller.phone,
-    value:value,
-    status:"pending",
-    time:Date.now()
-  });
+await db.collection("requests").add({
+buyer:user.phone,
+seller:seller.phone,
+value:value,
+status:"pending",
+time:Date.now()
+});
 
-  alert("Pedido criado");
+alert("Pedido criado");
 }
 
 async function loadRequests(){
-  const snap = await db.collection("requests").where("seller","==",user.phone).get();
+const snap = await db.collection("requests").where("seller","==",user.phone).get();
 
-  requests.innerHTML="";
+// CORREÇÃO: Referência explícita ao elemento
+const requestsList = document.getElementById('requests');
+requestsList.innerHTML="";
 
-  snap.forEach(doc=>{
-    let r = doc.data();
+snap.forEach(doc=>{
+let r = doc.data();
 
-    requests.innerHTML += `
-    <div class='card'>
-    ${r.value} - ${r.status}
-    <button onclick="confirmSeller('${doc.id}')">Confirmar</button>
-    </div>`;
-  });
+requestsList.innerHTML += `
+<div class='card'>
+${r.value} - ${r.status}
+<button onclick="confirmSeller('${doc.id}')">Confirmar</button>
+</div>`;
+});
 }
 
 async function confirmSeller(id){
-  await db.collection("requests").doc(id).update({status:"paid"});
+await db.collection("requests").doc(id).update({status:"paid"});
 }
 
 async function loadAdmin(){
-  adminPanel.style.display="block";
+// CORREÇÃO: Referência explícita ao elemento
+const adminPanel = document.getElementById('adminPanel');
+const adminRequestsList = document.getElementById('adminRequests');
 
-  const snap = await db.collection("requests").where("status","==","paid").get();
+adminPanel.style.display="block";
 
-  adminRequests.innerHTML="";
+const snap = await db.collection("requests").where("status","==","paid").get();
 
-  snap.forEach(doc=>{
-    let r = doc.data();
+adminRequestsList.innerHTML="";
 
-    adminRequests.innerHTML += `
-    <div class='card'>
-    ${r.value}
-    <button onclick="approve('${doc.id}','${r.buyer}','${r.seller}',${r.value})">Aprovar</button>
-    </div>`;
-  });
+snap.forEach(doc=>{
+let r = doc.data();
+
+adminRequestsList.innerHTML += `
+<div class='card'>
+${r.value}
+<button onclick="approve('${doc.id}','${r.buyer}','${r.seller}',${r.value})">Aprovar</button>
+</div>`;
+});
 }
 
 async function approve(id,buyer,seller,value){
-  let buyerRef = await db.collection("users").doc(buyer).get();
-  let sellerRef = await db.collection("users").doc(seller).get();
+let buyerRef = await db.collection("users").doc(buyer).get();
+let sellerRef = await db.collection("users").doc(seller).get();
 
-  let b = buyerRef.data();
-  let s = sellerRef.data();
+let b = buyerRef.data();
+let s = sellerRef.data();
 
-  // transferência
-  s.balance -= value;
-  b.balance = (b.balance||0) + value;
+// transferência
+s.balance -= value;
+b.balance = (b.balance||0) + value;
 
-  // comissão
-  let commission = value * 0.1;
-  let adminPart = commission * 0.6;
-  let networkPart = commission * 0.3;
+// comissão
+let commission = value * 0.1;
+let adminPart = commission * 0.6;
+let networkPart = commission * 0.3;
 
-  // admin recebe
-  let adminRef = await db.collection("users").doc(ADMIN).get();
-  let admin = adminRef.data();
-  admin.balance = (admin.balance||0) + adminPart;
+// admin recebe
+let adminRef = await db.collection("users").doc(ADMIN).get();
+let admin = adminRef.data();
+admin.balance = (admin.balance||0) + adminPart;
 
-  // rede (simples: quem convidou)
-  if(s.ref){
-    let refRef = await db.collection("users").doc(s.ref).get();
-    if(refRef.exists){
-      let refUser = refRef.data();
-      refUser.balance = (refUser.balance||0) + networkPart;
-      await db.collection("users").doc(s.ref).set(refUser);
-    }
-  }
+// rede (simples: quem convidou)
+if(s.ref){
+let refRef = await db.collection("users").doc(s.ref).get();
+if(refRef.exists){
+let refUser = refRef.data();
+refUser.balance = (refUser.balance||0) + networkPart;
+await db.collection("users").doc(s.ref).set(refUser);
+}
+}
 
-  s.totalSales = (s.totalSales||0) + value;
+s.totalSales = (s.totalSales||0) + value;
 
-  await db.collection("users").doc(buyer).set(b);
-  await db.collection("users").doc(seller).set(s);
-  await db.collection("users").doc(ADMIN).set(admin);
+await db.collection("users").doc(buyer).set(b);
+await db.collection("users").doc(seller).set(s);
+await db.collection("users").doc(ADMIN).set(admin);
 
-  await db.collection("requests").doc(id).update({status:"completed"});
+await db.collection("requests").doc(id).update({status:"completed"});
 
-  alert("Concluído");
-  loadAdmin();
+alert("Concluído");
+loadAdmin();
 }
 
 function logout(){ location.reload(); }
