@@ -1,326 +1,2366 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mozcoin PRO - Versão Funcional</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="description" content="Mozcoin - Sistema de Moeda Digital e Mineração">
+    <title>Mozcoin | Moeda Digital</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================
+           MOZCOIN WEB - CSS COMPLETO
+           ========================================== */
+        
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #D4AF37;
+            --secondary: #C0C0C0;
+            --bronze: #CD7F32;
+            --silver: #C0C0C0;
+            --gold: #FFD700;
+            
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            
+            --bg-dark: #0F172A;
+            --bg-card: #1E293B;
+            --bg-light: #334155;
+            --bg-hover: #475569;
+            
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            
+            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #D4AF37 50%, #FFD700 100%);
+            --gradient-dark: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            --gradient-card: linear-gradient(145deg, #1E293B 0%, #0F172A 100%);
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+            --shadow-gold: 0 4px 20px rgba(255,215,0,0.3);
+            --shadow-glow: 0 0 30px rgba(255,215,0,0.2);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+        }
 
-<style>
-/* Mantendo o teu estilo original com pequenos ajustes de usabilidade */
-body { font-family: Arial, sans-serif; background:#0f172a; color:white; text-align:center; margin: 0; padding: 20px;}
-.container { max-width:520px; margin:auto; }
-input, button { width:100%; padding:12px; margin:8px 0; border-radius:10px; border:none; box-sizing: border-box;}
-input { background: #1e293b; color: white; border: 1px solid #334155;}
-button { background:#22c55e; color:white; font-weight:bold; cursor: pointer;}
-button:hover { background: #16a34a;}
-.card { background:#1e293b; padding:15px; border-radius:14px; margin-top:12px; border: 1px solid #334155; text-align: left;}
-.badge { background:green; padding:3px 8px; border-radius:8px; font-size: 0.8em;}
-h1 { margin-bottom: 20px;}
-h3 { margin-top: 0; color: #cbd5e1; }
-.request-item { border-bottom: 1px solid #334155; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;}
-.request-item:last-child { border-bottom: none; }
-.request-item button { width: auto; margin: 0; padding: 8px 15px; font-size: 0.9em;}
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar estilizada */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-light);
+            border-radius: var(--radius-full);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* ==========================================
+           UTILIDADES
+           ========================================== */
+        
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        .slide-up { animation: slideUp 0.4s ease; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .text-gradient {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-bronze { color: var(--bronze); }
+        .text-silver { color: var(--silver); }
+        .text-gold { color: var(--gold); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+
+        /* ==========================================
+           LOGIN / REGISTRO
+           ========================================== */
+        
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: 
+                radial-gradient(ellipse at top, rgba(255,215,0,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(205,127,50,0.1) 0%, transparent 50%),
+                var(--bg-dark);
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 420px;
+            background: var(--gradient-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-gold);
+            animation: pulse 2s infinite;
+        }
+
+        .logo-section h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-section p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--bg-light);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+        }
+
+        .form-input:focus + i,
+        .input-wrapper:focus-within i {
+            color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-gold);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--bg-light);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .auth-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .auth-links a:hover {
+            color: var(--primary);
+        }
+
+        .level-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .level-option {
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--bg-light);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .level-option:hover,
+        .level-option.active {
+            border-color: var(--primary);
+            background: rgba(255,215,0,0.1);
+        }
+
+        .level-option i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .level-option.bronze i { color: var(--bronze); }
+        .level-option.prata i { color: var(--silver); }
+        .level-option.ouro i { color: var(--gold); }
+
+        .level-option span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* ==========================================
+           APP LAYOUT
+           ========================================== */
+        
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--bg-dark);
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--gradient-card);
+            border-bottom: 1px solid var(--bg-light);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--bg-dark);
+            font-weight: 700;
+            position: relative;
+        }
+
+        .trust-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            border: 2px solid var(--bg-dark);
+        }
+
+        .user-meta h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .level-badge.bronze {
+            background: rgba(205,127,50,0.2);
+            color: var(--bronze);
+        }
+
+        .level-badge.prata {
+            background: rgba(192,192,192,0.2);
+            color: var(--silver);
+        }
+
+        .level-badge.ouro {
+            background: rgba(255,215,0,0.2);
+            color: var(--gold);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-light);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-hover);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: none;
+        }
+
+        .notification-dot.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        /* Main Content */
+        .app-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-gold);
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .balance-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            color: var(--primary);
+            transform: rotate(180deg);
+        }
+
+        .refresh-btn.spinning {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .balance-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .action-card i {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .action-card span {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .action-card:hover span {
+            color: var(--primary);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Machines Grid */
+        .machines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .machine-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .machine-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .machine-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .machine-card.bronze::before { background: var(--bronze); }
+        .machine-card.prata::before { background: var(--silver); }
+        .machine-card.ouro::before { background: var(--gradient-gold); }
+
+        .machine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .machine-type {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .machine-status {
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .machine-status.active {
+            background: rgba(16,185,129,0.2);
+            color: var(--success);
+        }
+
+        .machine-status.expired {
+            background: rgba(239,68,68,0.2);
+            color: var(--danger);
+        }
+
+        .machine-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .machine-stat {
+            background: var(--bg-dark);
+            padding: 0.875rem;
+            border-radius: var(--radius-md);
+        }
+
+        .machine-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .machine-stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .machine-progress {
+            background: var(--bg-dark);
+            height: 8px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.3s;
+            background: var(--gradient-gold);
+        }
+
+        .machine-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .rent-machine-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-gold);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .rent-machine-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        /* Forms */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .calculation-box {
+            background: var(--bg-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .calc-row:last-child {
+            border-bottom: none;
+        }
+
+        .calc-row.total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-top: 2px solid var(--primary);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--bg-light);
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255,215,0,0.05);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pill.pending {
+            background: rgba(245,158,11,0.2);
+            color: var(--warning);
+        }
+
+        .status-pill.completed {
+            background: rgba(16,185,129,0.2);
+            color: var(--success);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--bg-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+            margin: 0;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--bg-light);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom));
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+            flex: 1;
+            font-family: inherit;
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.5rem;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.warning { border-left: 4px solid var(--warning); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15,23,42,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--bg-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 1.5rem;
+            }
+
+            .balance-amount {
+                font-size: 2rem;
+            }
+
+            .balance-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .machines-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                overflow-x: auto;
+            }
+
+            .app-main {
+                padding: 1rem;
+                padding-bottom: 6rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .app-main {
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                gap: 2rem;
+                align-items: start;
+            }
+
+            .sidebar-nav {
+                position: sticky;
+                top: 100px;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-<h1>Mozcoin PRO</h1>
+    <!-- ==========================================
+         TELA DE LOGIN
+         ========================================== -->
+    <div id="login-screen" class="auth-container">
+        <div class="auth-box fade-in">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h1 class="text-gradient">MOZCOIN</h1>
+                <p>Sistema de Moeda Digital</p>
+            </div>
 
-<div id="authSection">
-<div class="card">
-<h3>Login / Registo</h3>
-<p style="font-size:0.9em; color:#cbd5e1; margin-bottom: 15px;">Introduza o seu número e PIN. Se a conta não existir, será criada uma conta de teste com 1000 MT.</p>
-<input type="tel" id="authPhone" placeholder="Número de Telefone">
-<input type="password" id="authPin" placeholder="PIN (4 dígitos)">
-<button onclick="handleAuth()">Entrar ou Registar</button>
-</div>
-</div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Número de Telemóvel</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-input" id="login-phone" placeholder="258840000000" maxlength="12" required>
+                    </div>
+                </div>
 
-<div id="dashboard" style="display:none;">
-<div class="card">
-<h3>A tua Conta</h3>
-<p>Saldo: <strong><span id="balance">0</span> MT</strong></p>
-<p>Total vendido: <span id="sold">0</span> MT</p>
-<p id="badgeArea"></p>
-</div>
+                <div class="form-group">
+                    <label class="form-label">PIN (6 dígitos)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-input" id="login-pin" placeholder="••••••" maxlength="6" required>
+                    </div>
+                </div>
 
-<div class="card">
-<h3>Comprar Mozcoin</h3>
-<p style="font-size:0.9em; color:#cbd5e1;">Um vendedor aleatório será atribuído ao seu pedido.</p>
-<input type="number" id="buyAmount" placeholder="Valor em MT">
-<button onclick="requestBuy()">Enviar Pedido de Compra</button>
-</div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </form>
 
-<div class="card" id="sellerPanel" style="display:none;">
-<h3>Pedidos para Confirmar (como Vendedor)</h3>
-<div id="requests"></div>
-</div>
+            <div class="auth-links">
+                <a href="#" onclick="showScreen('register-screen')">
+                    <i class="fas fa-user-plus"></i> Criar nova conta
+                </a>
+                <a href="#" onclick="showScreen('recover-screen')">
+                    <i class="fas fa-key"></i> Recuperar PIN
+                </a>
+            </div>
+        </div>
+    </div>
 
-<div class="card" id="adminPanel" style="display:none; border-color: #ca8a04;">
-<h3 style="color: #ca8a04;">Painel de Administração</h3>
-<div id="adminRequests"></div>
-</div>
+    <!-- ==========================================
+         TELA DE REGISTRO
+         ========================================== -->
+    <div id="register-screen" class="auth-container hidden">
+        <div class="auth-box slide-up">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1 class="text-gradient">CRIAR CONTA</h1>
+                <p>Comece a minerar Mozcoin</p>
+            </div>
 
-<button onclick="logout()" style="background: #ef4444; margin-top: 20px;">Sair</button>
-</div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-input" id="reg-name" placeholder="Seu nome completo" required>
+                    </div>
+                </div>
 
-</div>
+                <div class="form-group">
+                    <label class="form-label">Telemóvel</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-input" id="reg-phone" placeholder="258840000000" maxlength="12" required>
+                    </div>
+                </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+                <div class="form-group">
+                    <label class="form-label">Criar PIN (6 dígitos)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-input" id="reg-pin" placeholder="••••••" maxlength="6" required>
+                    </div>
+                </div>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
-  authDomain: "mozcoin.firebaseapp.com",
-  projectId: "mozcoin",
-  storageBucket: "mozcoin.firebasestorage.app",
-  messagingSenderId: "1097811611947",
-  appId: "1:1097811611947:web:476c4b2e12fc4c6529756e",
-  measurementId: "G-9KCS6TG1CZ"
-};
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+                <div class="form-group">
+                    <label class="form-label">Quem te indicou? (opcional)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-link"></i>
+                        <input type="text" class="form-input" id="reg-referral" placeholder="Código de indicação">
+                    </div>
+                </div>
 
-let user = null;
-const ADMIN = "8613715547554"; // !!! O TEU NÚMERO DE ADMIN JÁ INSERIDO !!!
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check-circle"></i> Criar Conta
+                </button>
+            </form>
 
-// Referências explícitas aos elementos HTML
-const ui = {
-authSection: document.getElementById('authSection'),
-dashboard: document.getElementById('dashboard'),
-authPhone: document.getElementById('authPhone'),
-authPin: document.getElementById('authPin'),
-balance: document.getElementById('balance'),
-sold: document.getElementById('sold'),
-badgeArea: document.getElementById('badgeArea'),
-buyAmount: document.getElementById('buyAmount'),
-sellerPanel: document.getElementById('sellerPanel'),
-requests: document.getElementById('requests'),
-adminPanel: document.getElementById('adminPanel'),
-adminRequests: document.getElementById('adminRequests')
-};
+            <button class="btn btn-secondary" onclick="showScreen('login-screen')">
+                <i class="fas fa-arrow-left"></i> Voltar para Login
+            </button>
+        </div>
+    </div>
 
-// --- FUNÇÃO DE AUTENTICAÇÃO (Login e Registo automático) ---
-async function handleAuth() {
-const phone = ui.authPhone.value;
-const pin = ui.authPin.value;
+    <!-- ==========================================
+         APLICATIVO PRINCIPAL
+         ========================================== -->
+    <div id="app-screen" class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="user-info-header">
+                    <div class="user-avatar" id="header-avatar">
+                        <span id="user-initial">U</span>
+                        <div class="trust-badge hidden" id="trust-badge">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="user-meta">
+                        <h3 id="header-name">Usuário</h3>
+                        <span class="level-badge bronze" id="header-level">
+                            <i class="fas fa-medal"></i> BRONZE
+                        </span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="showNotifications()" title="Notificações">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot" id="notif-dot"></span>
+                    </button>
+                    <button class="icon-btn" onclick="logout()" title="Sair">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
 
-if(!phone || !pin) return alert("Preenche todos os campos.");
+        <!-- Main Content -->
+        <main class="app-main">
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <!-- Balance Card -->
+                <div class="balance-card">
+                    <div class="balance-header">
+                        <span class="balance-label">Saldo Disponível</span>
+                        <button class="refresh-btn" onclick="refreshData()" id="refresh-btn" title="Atualizar">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="balance-amount" id="user-balance">0,00 MTN</div>
+                    <div class="balance-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-produced">0,00</span>
+                            <span class="stat-label">Total Produzido</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-sold">0,00</span>
+                            <span class="stat-label">Total Vendido</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-commission">0,00</span>
+                            <span class="stat-label">Comissões</span>
+                        </div>
+                    </div>
+                </div>
 
-try {
-// Tenta ler o documento do utilizador na coleção 'users'
-const docRef = db.collection("users").doc(phone);
-const doc = await docRef.get();
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="action-card" onclick="showSection('machines')">
+                        <i class="fas fa-server text-bronze"></i>
+                        <span>Máquinas</span>
+                    </div>
+                    <div class="action-card" onclick="showSection('buy')">
+                        <i class="fas fa-shopping-cart text-success"></i>
+                        <span>Comprar</span>
+                    </div>
+                    <div class="action-card" onclick="showSection('sell')" id="action-sell" style="display:none;">
+                        <i class="fas fa-hand-holding-usd text-gold"></i>
+                        <span>Vender</span>
+                    </div>
+                    <div class="action-card" onclick="showSection('history')">
+                        <i class="fas fa-history text-info"></i>
+                        <span>Histórico</span>
+                    </div>
+                </div>
 
-if(doc.exists) {
-// LOGIN: Utilizador existe, verifica o PIN
-if(doc.data().pin !== pin) return alert("PIN errado.");
-user = doc.data();
-alert("Login efetuado com sucesso!");
-} else {
-// REGISTO: Utilizador não existe, cria uma conta de teste
-alert("Número não encontrado. Vamos criar uma conta de teste para ti com 1000 MT!");
-user = {
-phone: phone,
-pin: pin,
-balance: 1000, // Saldo inicial de teste
-totalSales: 0,
-seller: false // Por defeito não é vendedor
-};
-// Grava o novo utilizador no Firestore
-await docRef.set(user);
-}
+                <!-- Resumo -->
+                <div class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Resumo da Conta
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><i class="fas fa-user-circle text-muted"></i> Nível</td>
+                                <td id="summary-level">Bronze</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-server text-muted"></i> Máquinas Ativas</td>
+                                <td id="summary-machines">0</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-coins text-muted"></i> Produção Diária</td>
+                                <td id="summary-daily">0,00 MTN</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-calendar text-muted"></i> Membro desde</td>
+                                <td id="summary-date">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-showDashboard();
-} catch (error) {
-console.error("Erro na autenticação:", error);
-alert("Erro na autenticação. Verifique se as regras do Firestore estão 'if true;'.");
-}
-}
+            <!-- Machines Section -->
+            <section id="machines-section" class="section">
+                <div class="section-title">
+                    <i class="fas fa-server"></i>
+                    Minhas Máquinas
+                </div>
+                
+                <div id="machines-list" class="machines-grid">
+                    <!-- Máquinas serão inseridas aqui -->
+                </div>
 
-function showDashboard(){
-ui.authSection.style.display="none";
-ui.dashboard.style.display="block";
-ui.balance.innerText = (user.balance || 0).toLocaleString('pt-MZ');
-ui.sold.innerText = (user.totalSales || 0).toLocaleString('pt-MZ');
+                <button class="rent-machine-btn" onclick="showRentModal()">
+                    <i class="fas fa-plus-circle"></i> Arrendar Nova Máquina
+                </button>
+            </section>
 
-if(user.totalSales >= 5){
-ui.badgeArea.innerHTML = "<span class='badge'>Confiável +5✅</span>";
-} else {
-ui.badgeArea.innerHTML = "";
-}
+            <!-- Buy Section -->
+            <section id="buy-section" class="section">
+                <div class="section-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Comprar Moeda
+                </div>
 
-// Mostrar painel de vendedor se o utilizador for um vendedor
-if(user.seller) {
-ui.sellerPanel.style.display="block";
-loadRequests();
-}
+                <div class="form-card">
+                    <div class="form-group">
+                        <label class="form-label">Valor desejado (MTN)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-coins"></i>
+                            <input type="number" class="form-input" id="buy-amount" placeholder="Ex: 500" min="50" step="10">
+                        </div>
+                    </div>
 
-// Mostrar painel de admin se o utilizador for o admin
-if(user.phone === ADMIN) {
-ui.adminPanel.style.display="block";
-loadAdmin();
-}
-}
+                    <div class="calculation-box">
+                        <div class="calc-row">
+                            <span>Valor da moeda:</span>
+                            <span id="calc-amount">0,00 MTN</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Taxa de serviço (6%):</span>
+                            <span id="calc-fee">0,00 MTN</span>
+                        </div>
+                        <div class="calc-row total">
+                            <span>Total a pagar:</span>
+                            <span id="calc-total">0,00 MTN</span>
+                        </div>
+                    </div>
 
-// Prioridade de vendedores (quem vendeu mais)
-async function getSeller(){
-try {
-const snap = await db.collection("users").where("seller","==",true).orderBy("totalSales", "desc").limit(1).get();
-if(snap.empty) return null;
-return snap.docs[0].data();
-} catch (error) {
-console.error("Erro ao procurar vendedor:", error);
-return null;
-}
-}
+                    <button class="btn btn-primary" onclick="initiatePurchase()">
+                        <i class="fas fa-search"></i> Buscar Vendedor
+                    </button>
+                </div>
+            </section>
 
-async function requestBuy(){
-let value = Number(ui.buyAmount.value);
-if(!value || value <= 0) return alert("Insere um valor válido.");
+            <!-- Sell Section -->
+            <section id="sell-section" class="section">
+                <div class="section-title">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    Vender Moeda
+                </div>
 
-let seller = await getSeller();
-if(!seller) return alert("De momento não há vendedores disponíveis (nenhum utilizador tem seller=true no Firestore).");
+                <div class="form-card" id="seller-status-card">
+                    <!-- Status do vendedor -->
+                </div>
+            </section>
 
-try {
-// Cria um novo pedido na coleção 'requests'
-await db.collection("requests").add({
-buyer: user.phone,
-seller: seller.phone,
-value: value,
-status: "pending", // Status inicial
-time: Date.now()
-});
+            <!-- History Section -->
+            <section id="history-section" class="section">
+                <div class="section-title">
+                    <i class="fas fa-history"></i>
+                    Histórico de Transações
+                </div>
 
-alert("Pedido criado. Aguarda confirmação do vendedor.");
-ui.buyAmount.value = ""; // Limpar input
-} catch (error) {
-console.error("Erro ao criar pedido:", error);
-alert("Erro ao criar pedido.");
-}
-}
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list">
+                            <!-- Histórico -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-async function loadRequests(){
-// Pedidos onde o utilizador logado é o VENDEDOR e estão PENDENTES
-const snap = await db.collection("requests")
-.where("seller","==",user.phone)
-.where("status", "==", "pending")
-.get();
+        </main>
 
-ui.requests.innerHTML="";
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </button>
+            <button class="nav-item" onclick="showSection('machines')">
+                <i class="fas fa-server"></i>
+                <span>Máquinas</span>
+            </button>
+            <button class="nav-item" onclick="showSection('buy')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Comprar</span>
+            </button>
+            <button class="nav-item" onclick="showSection('history')">
+                <i class="fas fa-list"></i>
+                <span>Extrato</span>
+            </button>
+        </nav>
+    </div>
 
-if(snap.empty) {
-ui.requests.innerHTML = "<p style='font-size:0.9em; color:#cbd5e1;'>Não tens pedidos pendentes.</p>";
-return;
-}
+    <!-- ==========================================
+         MODAIS
+         ========================================== -->
+    
+    <!-- Modal de Arrendamento -->
+    <div class="modal-overlay" id="rent-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-server"></i> Arrendar Máquina</h3>
+                <button class="modal-close" onclick="closeModal('rent-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="level-selector">
+                    <div class="level-option bronze active" onclick="selectMachineType('A')">
+                        <i class="fas fa-server"></i>
+                        <span>Bronze</span>
+                        <small>250 MTN</small>
+                    </div>
+                    <div class="level-option prata" onclick="selectMachineType('F')" id="option-prata" style="opacity:0.5;pointer-events:none;">
+                        <i class="fas fa-server"></i>
+                        <span>Prata</span>
+                        <small>500 MTN</small>
+                    </div>
+                    <div class="level-option ouro" onclick="selectMachineType('B')" id="option-ouro" style="opacity:0.5;pointer-events:none;">
+                        <i class="fas fa-server"></i>
+                        <span>Ouro</span>
+                        <small>1000 MTN</small>
+                    </div>
+                </div>
 
-snap.forEach(doc=>{
-let r = doc.data();
-const date = new Date(r.time).toLocaleDateString('pt-MZ');
+                <div id="machine-details">
+                    <div class="calculation-box">
+                        <div class="calc-row">
+                            <span>Modelo:</span>
+                            <span id="rent-model">A11</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Renda (27 dias):</span>
+                            <span id="rent-cost">250 MTN</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Comissão:</span>
+                            <span id="rent-commission">20 MTN</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Produção/dia:</span>
+                            <span id="rent-daily">15 MTN</span>
+                        </div>
+                        <div class="calc-row total">
+                            <span>Total a pagar:</span>
+                            <span id="rent-total">270 MTN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('rent-modal')">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmRent()">
+                    <i class="fas fa-check"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
 
-ui.requests.innerHTML += `
-<div class='request-item'>
-<span>[${date}] Comprador ${r.buyer}: <strong>${r.value.toLocaleString('pt-MZ')} MT</strong></span>
-<button onclick="confirmSeller('${doc.id}')">Confirmar Pagamento</button>
-</div>`;
-});
-}
+    <!-- Modal de Notificações -->
+    <div class="modal-overlay" id="notifications-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Notificações</h3>
+                <button class="modal-close" onclick="closeModal('notifications-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="notifications-list">
+                <!-- Notificações -->
+            </div>
+        </div>
+    </div>
 
-// Vendedor confirma o recebimento do dinheiro real
-async function confirmSeller(id){
-try {
-await db.collection("requests").doc(id).update({status:"paid"});
-alert("Pagamento confirmado. O pedido aguarda agora a aprovação final do Admin.");
-loadRequests(); // Recarregar lista do vendedor
-} catch (error) {
-console.error("Erro ao confirmar pagamento:", error);
-alert("Erro ao confirmar pagamento.");
-}
-}
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <p class="loading-text">Processando...</p>
+    </div>
 
-// Admin carrega pedidos que os vendedores marcaram como "paid" (pagos)
-async function loadAdmin(){
-ui.adminPanel.style.display="block";
-const snap = await db.collection("requests").where("status","==","paid").get();
-ui.adminRequests.innerHTML="";
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
 
-if(snap.empty) {
-ui.adminRequests.innerHTML = "<p style='font-size:0.9em; color:#cbd5e1;'>Não há pedidos aguardando aprovação final.</p>";
-return;
-}
+    <!-- ==========================================
+         SCRIPTS
+         ========================================== -->
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
-snap.forEach(doc=>{
-let r = doc.data();
-const date = new Date(r.time).toLocaleDateString('pt-MZ');
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO FIREBASE
+        // ==========================================
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCW9ZZadm4WJ_FKtOjvkP1czsfImwzl98c",
+            authDomain: "mozcoin.firebaseapp.com",
+            databaseURL: "https://mozcoin-default-rtdb.firebaseio.com",
+            projectId: "mozcoin",
+            storageBucket: "mozcoin.firebasestorage.app",
+            messagingSenderId: "1097811611947",
+            appId: "1:1097811611947:web:476c4b2e12fc4c6529756e",
+            measurementId: "G-9KCS6TG1CZ"
+        };
 
-ui.adminRequests.innerHTML += `
-<div class='request-item' style='border-color: #ca8a04;'>
-<span>[${date}] Comprador ${r.buyer} de Vendedor ${r.seller}: <strong>${r.value.toLocaleString('pt-MZ')} MT</strong></span>
-<button onclick="approve('${doc.id}','${r.buyer}','${r.seller}',${r.value})" style="background: #ca8a04;">Aprovar Transferência FINAL</button>
-</div>`;
-});
-}
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
 
-// !!! APROVAÇÃO FINAL DO ADMIN !!! Transfere os saldos usando Transação.
-async function approve(id,buyer,seller,value){
-if(!confirm(`Tens certeza que queres aprovar a transferência de ${value} MT para ${buyer}?`)) return;
+        // ==========================================
+        // CONFIGURAÇÕES DO SISTEMA
+        // ==========================================
+        
+        const SYSTEM_CONFIG = {
+            machines: {
+                A: { 
+                    name: 'Bronze', 
+                    rent: 250, 
+                    commission: 20, 
+                    daily: 15, 
+                    hourly: 1.6, 
+                    days: 27, 
+                    models: ['A11', 'A12'],
+                    color: '#CD7F32'
+                },
+                F: { 
+                    name: 'Prata', 
+                    rent: 500, 
+                    commission: 30, 
+                    daily: 30.24, 
+                    hourly: 1.26, 
+                    days: 27, 
+                    models: ['F13', 'F14', 'F15'],
+                    color: '#C0C0C0'
+                },
+                B: { 
+                    name: 'Ouro', 
+                    rent: 1000, 
+                    commission: 50, 
+                    daily: 53.7, 
+                    hourly: 2.237, 
+                    days: 27, 
+                    models: ['B16', 'B17', 'B18'],
+                    color: '#FFD700'
+                }
+            },
+            levels: {
+                bronze: { 
+                    name: 'Bronze', 
+                    maxMachines: 2, 
+                    types: ['A'], 
+                    canSell: false, 
+                    upgrade: 200, 
+                    wallet: null 
+                },
+                prata: { 
+                    name: 'Prata', 
+                    maxMachines: 4, 
+                    types: ['A', 'F'], 
+                    canSell: true, 
+                    upgrade: 600, 
+                    wallet: 300 
+                },
+                ouro: { 
+                    name: 'Ouro', 
+                    maxMachines: 8, 
+                    types: ['A', 'F', 'B'], 
+                    canSell: true, 
+                    upgrade: null, 
+                    wallet: 300 
+                }
+            }
+        };
 
-try {
-// Usar uma transação do Firestore para garantir integridade (tudo ou nada)
-await db.runTransaction(async (transaction) => {
-let buyerRef = db.collection("users").doc(buyer);
-let sellerRef = db.collection("users").doc(seller);
-let adminRef = db.collection("users").doc(ADMIN);
-let requestRef = db.collection("requests").doc(id);
+        // ==========================================
+        // VARIÁVEIS GLOBAIS
+        // ==========================================
+        
+        let currentUser = null;
+        let userData = null;
+        let selectedMachineType = 'A';
 
-let buyerDoc = await transaction.get(buyerRef);
-let sellerDoc = await transaction.get(sellerRef);
-let adminDoc = await transaction.get(adminRef);
+        // ==========================================
+        // UTILITÁRIOS
+        // ==========================================
+        
+        const Utils = {
+            formatCurrency: (value) => {
+                return new Intl.NumberFormat('pt-MZ', {
+                    style: 'decimal',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value) + ' MTN';
+            },
 
-if (!buyerDoc.exists || !sellerDoc.exists || !adminDoc.exists) {
-throw "Um dos utilizadores não existe na base de dados.";
-}
+            formatPhone: (phone) => {
+                phone = phone.replace(/\s/g, '');
+                if (phone.startsWith('258')) return phone;
+                if (phone.startsWith('8')) return '258' + phone;
+                return phone;
+            },
 
-let b = buyerDoc.data();
-let s = sellerDoc.data();
-let admin = adminDoc.data();
+            generateId: () => {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            },
 
-if((s.balance || 0) < value) throw "Vendedor não tem saldo de Mozcoin suficiente.";
+            generateReferralCode: (name) => {
+                const random = Math.random().toString(36).substring(2, 5).toLowerCase();
+                const namePart = name.toLowerCase().replace(/\s/g, '').substring(0, 4);
+                return `moz${random}${namePart}`;
+            },
 
-let commission = value * 0.1;
-let adminPart = commission * 0.6;
-let networkPart = commission * 0.3;
+            addDays: (date, days) => {
+                const result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result.toISOString();
+            },
 
-// ATUALIZAÇÃO DE SALDOS (Lógica de transferência)
-transaction.update(sellerRef, {
-balance: (s.balance || 0) - value,
-totalSales: (s.totalSales || 0) + value 
-});
+            formatDate: (isoString) => {
+                if (!isoString) return '-';
+                const date = new Date(isoString);
+                return date.toLocaleDateString('pt-MZ', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            },
 
-transaction.update(buyerRef, {
-balance: (b.balance || 0) + value
-});
+            getInitials: (name) => {
+                return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            }
+        };
 
-transaction.update(adminRef, {
-balance: (admin.balance || 0) + adminPart
-});
+        // ==========================================
+        // NAVEGAÇÃO
+        // ==========================================
+        
+        function showScreen(screenId) {
+            document.querySelectorAll('.auth-container, .app-container').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+                if (screenId === 'app-screen') {
+                    target.classList.add('active');
+                }
+            }
+        }
 
-transaction.update(requestRef, {status:"completed"});
-});
+        function showSection(sectionName) {
+            // Esconder todas as seções
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Mapear nomes para IDs
+            const sectionMap = {
+                'dashboard': 'dashboard-section',
+                'machines': 'machines-section',
+                'buy': 'buy-section',
+                'sell': 'sell-section',
+                'history': 'history-section'
+            };
+            
+            const sectionId = sectionMap[sectionName];
+            if (sectionId) {
+                document.getElementById(sectionId).classList.add('active');
+            }
+            
+            // Atualizar navegação
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Ativar botão correspondente
+            const navButtons = document.querySelectorAll('.nav-item');
+            const index = Object.keys(sectionMap).indexOf(sectionName);
+            if (navButtons[index]) {
+                navButtons[index].classList.add('active');
+            }
+        }
 
-alert("Transferência final concluída com sucesso!");
-loadAdmin(); // Recarregar lista do admin
-} catch (error) {
-console.error("Erro na aprovação final:", error);
-alert("Erro na aprovação final: " + error);
-}
-}
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
 
-function logout(){ user = null; location.reload(); }
-</script>
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
 
+        // ==========================================
+        // AUTENTICAÇÃO
+        // ==========================================
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+            
+            const phone = Utils.formatPhone(document.getElementById('login-phone').value);
+            const pin = document.getElementById('login-pin').value;
+            
+            try {
+                // Buscar usuário pelo telefone
+                const snapshot = await database.ref('mozcoin/users')
+                    .orderByChild('profile/phone')
+                    .equalTo(phone)
+                    .once('value');
+                
+                if (!snapshot.exists()) {
+                    throw new Error('Usuário não encontrado');
+                }
+                
+                const userData = snapshot.val();
+                const userId = Object.keys(userData)[0];
+                const user = userData[userId];
+                
+                if (user.profile.pin !== pin) {
+                    throw new Error('PIN incorreto');
+                }
+                
+                if (user.profile.isBlocked) {
+                    throw new Error('Conta bloqueada. Contacte o administrador.');
+                }
+                
+                // Salvar sessão
+                localStorage.setItem('mozcoin_uid', userId);
+                currentUser = { uid: userId };
+                
+                showToast('Login realizado com sucesso!', 'success');
+                loadUserData(userId);
+                showScreen('app-screen');
+                
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+            
+            const fullName = document.getElementById('reg-name').value.trim();
+            const phone = Utils.formatPhone(document.getElementById('reg-phone').value);
+            const pin = document.getElementById('reg-pin').value;
+            const referralCode = document.getElementById('reg-referral').value.trim();
+            
+            try {
+                // Validações
+                if (pin.length !== 6) {
+                    throw new Error('O PIN deve ter 6 dígitos');
+                }
+                
+                // Verificar se telefone existe
+                const existing = await database.ref('mozcoin/users')
+                    .orderByChild('profile/phone')
+                    .equalTo(phone)
+                    .once('value');
+                
+                if (existing.exists()) {
+                    throw new Error('Este telefone já está registrado');
+                }
+                
+                // Buscar quem indicou
+                let referredBy = null;
+                if (referralCode) {
+                    const referrer = await database.ref('mozcoin/users')
+                        .orderByChild('profile/referralCode')
+                        .equalTo(referralCode)
+                        .once('value');
+                    
+                    if (referrer.exists()) {
+                        referredBy = Object.keys(referrer.val())[0];
+                    }
+                }
+                
+                // Criar usuário
+                const userId = Utils.generateId();
+                const myReferralCode = Utils.generateReferralCode(fullName);
+                
+                const newUser = {
+                    profile: {
+                        fullName,
+                        phone,
+                        pin,
+                        level: 'bronze',
+                        referralCode: myReferralCode,
+                        referredBy,
+                        createdAt: new Date().toISOString(),
+                        trustBadge: 'iniciante',
+                        completedPayments: 0,
+                        isActive: true,
+                        isBlocked: false
+                    },
+                    wallet: {
+                        balance: 0,
+                        totalSold: 0,
+                        totalCommission: 0,
+                        pendingBalance: 0,
+                        totalProduced: 0
+                    },
+                    sellerWallet: {
+                        isActive: false,
+                        mpesaNumber: null,
+                        emolaNumber: null,
+                        biNumber: null,
+                        biDocumentUrl: null,
+                        approvedAt: null,
+                        salesCount: 0
+                    },
+                    machines: {},
+                    transactions: {},
+                    notifications: {}
+                };
+                
+                await database.ref(`mozcoin/users/${userId}`).set(newUser);
+                
+                // Se foi indicado, adicionar à fila
+                if (referredBy) {
+                    await database.ref(`mozcoin/sellersQueue/byReferral/${userId}`).set(referredBy);
+                }
+                
+                showToast(`Conta criada! Seu código: ${myReferralCode}`, 'success');
+                showScreen('login-screen');
+                
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('mozcoin_uid');
+            currentUser = null;
+            userData = null;
+            showScreen('login-screen');
+            showToast('Sessão terminada', 'success');
+        }
+
+        // ==========================================
+        // CARREGAR DADOS DO USUÁRIO
+        // ==========================================
+        
+        async function loadUserData(userId) {
+            const uid = userId || localStorage.getItem('mozcoin_uid');
+            if (!uid) return;
+            
+            // Listener em tempo real
+            database.ref(`mozcoin/users/${uid}`).on('value', (snapshot) => {
+                userData = snapshot.val();
+                if (userData) {
+                    updateDashboard();
+                }
+            });
+        }
+
+        function updateDashboard() {
+            if (!userData) return;
+            
+            const { profile, wallet, machines, sellerWallet } = userData;
+            
+            // Header
+            document.getElementById('header-name').textContent = profile.fullName;
+            document.getElementById('user-initial').textContent = Utils.getInitials(profile.fullName);
+            
+            const levelBadge = document.getElementById('header-level');
+            levelBadge.className = `level-badge ${profile.level}`;
+            levelBadge.innerHTML = `<i class="fas fa-medal"></i> ${profile.level.toUpperCase()}`;
+            
+            // Trust badge
+            const trustBadge = document.getElementById('trust-badge');
+            if (profile.trustBadge === 'confiavel+5') {
+                trustBadge.classList.remove('hidden');
+            } else {
+                trustBadge.classList.add('hidden');
+            }
+            
+            // Balance
+            document.getElementById('user-balance').textContent = Utils.formatCurrency(wallet.balance);
+            document.getElementById('total-produced').textContent = Utils.formatCurrency(wallet.totalProduced || 0);
+            document.getElementById('total-sold').textContent = Utils.formatCurrency(wallet.totalSold);
+            document.getElementById('total-commission').textContent = Utils.formatCurrency(wallet.totalCommission);
+            
+            // Mostrar/esconder venda
+            const canSell = SYSTEM_CONFIG.levels[profile.level].canSell && sellerWallet?.isActive;
+            document.getElementById('action-sell').style.display = canSell ? 'flex' : 'none';
+            
+            // Resumo
+            document.getElementById('summary-level').textContent = SYSTEM_CONFIG.levels[profile.level].name;
+            document.getElementById('summary-machines').textContent = Object.keys(machines || {}).length;
+            
+            // Calcular produção diária total
+            let dailyProduction = 0;
+            Object.values(machines || {}).forEach(m => {
+                if (m.status === 'active') {
+                    dailyProduction += SYSTEM_CONFIG.machines[m.type].daily;
+                }
+            });
+            document.getElementById('summary-daily').textContent = Utils.formatCurrency(dailyProduction);
+            document.getElementById('summary-date').textContent = Utils.formatDate(profile.createdAt);
+            
+            // Atualizar máquinas
+            updateMachinesList(machines);
+            
+            // Verificar notificações
+            checkNotifications();
+        }
+
+        function updateMachinesList(machines) {
+            const container = document.getElementById('machines-list');
+            
+            if (!machines || Object.keys(machines).length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-server"></i>
+                        <p>Você não tem máquinas arrendadas</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Clique em "Arrendar Nova Máquina" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = Object.entries(machines).map(([id, machine]) => {
+                const config = SYSTEM_CONFIG.machines[machine.type];
+                const daysLeft = Math.ceil((new Date(machine.expiresAt) - new Date()) / (1000 * 60 * 60 * 24));
+                const progress = Math.max(0, Math.min(100, ((config.days - daysLeft) / config.days) * 100));
+                const isExpired = daysLeft <= 0;
+                
+                return `
+                    <div class="machine-card ${config.name.toLowerCase()} ${isExpired ? 'expired' : ''}">
+                        <div class="machine-header">
+                            <span class="machine-type" style="color: ${config.color}">
+                                ${machine.model}
+                            </span>
+                            <span class="machine-status ${isExpired ? 'expired' : 'active'}">
+                                ${isExpired ? 'Expirada' : 'Ativa'}
+                            </span>
+                        </div>
+                        <div class="machine-stats">
+                            <div class="machine-stat">
+                                <div class="machine-stat-label">Produção/Dia</div>
+                                <div class="machine-stat-value">${config.daily} MTN</div>
+                            </div>
+                            <div class="machine-stat">
+                                <div class="machine-stat-label">Produção/Hora</div>
+                                <div class="machine-stat-value">${config.hourly} MTN</div>
+                            </div>
+                            <div class="machine-stat">
+                                <div class="machine-stat-label">Dias Restantes</div>
+                                <div class="machine-stat-value ${daysLeft < 5 ? 'text-danger' : ''}">
+                                    ${isExpired ? 0 : daysLeft} dias
+                                </div>
+                            </div>
+                            <div class="machine-stat">
+                                <div class="machine-stat-label">Total Produzido</div>
+                                <div class="machine-stat-value text-gold">
+                                    ${Utils.formatCurrency(machine.totalProduced || 0)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="machine-progress">
+                            <div class="progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="machine-footer">
+                            <span>Início: ${Utils.formatDate(machine.rentedAt)}</span>
+                            <span>Fim: ${Utils.formatDate(machine.expiresAt)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // MÁQUINAS - ARRENDAMENTO
+        // ==========================================
+        
+        function showRentModal() {
+            const level = userData?.profile?.level || 'bronze';
+            const config = SYSTEM_CONFIG.levels[level];
+            
+            // Habilitar opções conforme nível
+            document.getElementById('option-prata').style.opacity = config.types.includes('F') ? '1' : '0.5';
+            document.getElementById('option-prata').style.pointerEvents = config.types.includes('F') ? 'auto' : 'none';
+            
+            document.getElementById('option-ouro').style.opacity = config.types.includes('B') ? '1' : '0.5';
+            document.getElementById('option-ouro').style.pointerEvents = config.types.includes('B') ? 'auto' : 'none';
+            
+            selectMachineType('A');
+            showModal('rent-modal');
+        }
+
+        function selectMachineType(type) {
+            selectedMachineType = type;
+            const config = SYSTEM_CONFIG.machines[type];
+            
+            // Atualizar UI
+            document.querySelectorAll('.level-option').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Atualizar detalhes
+            const model = config.models[0];
+            document.getElementById('rent-model').textContent = model;
+            document.getElementById('rent-cost').textContent = config.rent + ' MTN';
+            document.getElementById('rent-commission').textContent = config.commission + ' MTN';
+            document.getElementById('rent-daily').textContent = config.daily + ' MTN';
+            document.getElementById('rent-total').textContent = (config.rent + config.commission) + ' MTN';
+        }
+
+        async function confirmRent() {
+            showLoading(true);
+            
+            try {
+                const uid = localStorage.getItem('mozcoin_uid');
+                const config = SYSTEM_CONFIG.machines[selectedMachineType];
+                const levelConfig = SYSTEM_CONFIG.levels[userData.profile.level];
+                
+                // Verificar limite de máquinas
+                const currentMachines = Object.keys(userData.machines || {}).length;
+                if (currentMachines >= levelConfig.maxMachines) {
+                    throw new Error(`Limite de ${levelConfig.maxMachines} máquinas atingido para o nível ${userData.profile.level}`);
+                }
+                
+                const totalCost = config.rent + config.commission;
+                
+                // Verificar saldo
+                if (userData.wallet.balance < totalCost) {
+                    throw new Error('Saldo insuficiente. Compre moeda primeiro.');
+                }
+                
+                // Criar máquina
+                const machineId = Utils.generateId();
+                const now = new Date().toISOString();
+                const machine = {
+                    type: selectedMachineType,
+                    model: config.models[Math.floor(Math.random() * config.models.length)],
+                    rentedAt: now,
+                    expiresAt: Utils.addDays(now, config.days),
+                    status: 'active',
+                    totalProduced: 0
+                };
+                
+                // Atualizar dados
+                const updates = {};
+                updates[`mozcoin/users/${uid}/machines/${machineId}`] = machine;
+                updates[`mozcoin/users/${uid}/wallet/balance`] = userData.wallet.balance - totalCost;
+                
+                await database.ref().update(updates);
+                
+                closeModal('rent-modal');
+                showToast('Máquina arrendada com sucesso!', 'success');
+                
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // COMPRAR MOEDA
+        // ==========================================
+        
+        document.getElementById('buy-amount').addEventListener('input', (e) => {
+            const amount = parseFloat(e.target.value) || 0;
+            const fee = amount * 0.06; // 6% taxa
+            const total = amount + fee;
+            
+            document.getElementById('calc-amount').textContent = Utils.formatCurrency(amount);
+            document.getElementById('calc-fee').textContent = Utils.formatCurrency(fee);
+            document.getElementById('calc-total').textContent = Utils.formatCurrency(total);
+        });
+
+        async function initiatePurchase() {
+            const amount = parseFloat(document.getElementById('buy-amount').value);
+            
+            if (!amount || amount < 50) {
+                showToast('Valor mínimo: 50 MTN', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const uid = localStorage.getItem('mozcoin_uid');
+                
+                // Buscar vendedor disponível (simplificado)
+                const sellersSnapshot = await database.ref('mozcoin/sellersQueue/available')
+                    .orderByChild('balance')
+                    .startAt(amount)
+                    .limitToFirst(1)
+                    .once('value');
+                
+                if (!sellersSnapshot.exists()) {
+                    throw new Error('Nenhum vendedor disponível no momento');
+                }
+                
+                const sellerId = Object.keys(sellersSnapshot.val())[0];
+                const seller = sellersSnapshot.val()[sellerId];
+                
+                // Criar transação
+                const transactionId = Utils.generateId();
+                const fee = amount * 0.06;
+                
+                const transaction = {
+                    buyerId: uid,
+                    sellerId: sellerId,
+                    amount: amount,
+                    fee: fee,
+                    total: amount + fee,
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    expiresAt: Utils.addDays(new Date(), 1)
+                };
+                
+                await database.ref(`mozcoin/transactions/${transactionId}`).set(transaction);
+                
+                // Notificar vendedor
+                await database.ref(`mozcoin/users/${sellerId}/notifications/${Utils.generateId()}`).set({
+                    type: 'sale_request',
+                    title: 'Nova solicitação de compra',
+                    message: `${userData.profile.fullName} quer comprar ${amount} MTN`,
+                    data: { transactionId, amount },
+                    read: false,
+                    createdAt: new Date().toISOString()
+                });
+                
+                showToast('Solicitação enviada! Aguarde o vendedor.', 'success');
+                document.getElementById('buy-amount').value = '';
+                
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // NOTIFICAÇÕES
+        // ==========================================
+        
+        async function checkNotifications() {
+            const uid = localStorage.getItem('mozcoin_uid');
+            if (!uid) return;
+            
+            const snapshot = await database.ref(`mozcoin/users/${uid}/notifications`)
+                .orderByChild('read')
+                .equalTo(false)
+                .once('value');
+            
+            const count = snapshot.numChildren();
+            document.getElementById('notif-dot').classList.toggle('active', count > 0);
+        }
+
+        async function showNotifications() {
+            const uid = localStorage.getItem('mozcoin_uid');
+            const snapshot = await database.ref(`mozcoin/users/${uid}/notifications`)
+                .orderByChild('createdAt')
+                .limitToLast(20)
+                .once('value');
+            
+            const container = document.getElementById('notifications-list');
+            const notifications = [];
+            
+            snapshot.forEach((child) => {
+                notifications.unshift({ id: child.key, ...child.val() });
+            });
+            
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-bell-slash"></i><p>Sem notificações</p></div>';
+            } else {
+                container.innerHTML = notifications.map(n => `
+                    <div class="notification-item ${n.read ? 'read' : 'unread'}" 
+                         style="padding: 1rem; border-bottom: 1px solid var(--bg-light); ${!n.read ? 'background: rgba(255,215,0,0.05);' : ''}">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.25rem;">${n.title}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">${n.message}</p>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">
+                            ${Utils.formatDate(n.createdAt)}
+                        </span>
+                    </div>
+                `).join('');
+            }
+            
+            showModal('notifications-modal');
+            
+            // Marcar como lidas
+            notifications.filter(n => !n.read).forEach(n => {
+                database.ref(`mozcoin/users/${uid}/notifications/${n.id}/read`).set(true);
+            });
+        }
+
+        // ==========================================
+        // UTILITÁRIOS DE UI
+        // ==========================================
+        
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function refreshData() {
+            const btn = document.getElementById('refresh-btn');
+            btn.classList.add('spinning');
+            
+            const uid = localStorage.getItem('mozcoin_uid');
+            loadUserData(uid);
+            
+            setTimeout(() => {
+                btn.classList.remove('spinning');
+                showToast('Dados atualizados', 'success');
+            }, 1000);
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar sessão existente
+            const savedUid = localStorage.getItem('mozcoin_uid');
+            if (savedUid) {
+                showLoading(true);
+                loadUserData(savedUid).then(() => {
+                    showScreen('app-screen');
+                    showLoading(false);
+                }).catch(() => {
+                    localStorage.removeItem('mozcoin_uid');
+                    showScreen('login-screen');
+                    showLoading(false);
+                });
+            }
+        });
+
+        // Prevenir zoom em mobile
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('dblclick', (e) => e.preventDefault());
+    </script>
 </body>
 </html>
